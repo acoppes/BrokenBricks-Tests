@@ -1,0 +1,3 @@
+[submodule "TestBrokenBricks/Assets/BrokenBricks"]
+	path = TestBrokenBricks/Assets/BrokenBricks
+	url = https://github.com/acoppes/BrokenBricksECS
