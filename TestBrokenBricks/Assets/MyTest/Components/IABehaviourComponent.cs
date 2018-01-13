@@ -4,7 +4,7 @@ using System;
 
 namespace MyTest.Components
 {
-	[Serializable]
+    [Serializable]
 	public class IABehaviourComponent : IComponent
 	{
 		// link to behaviour tree?
