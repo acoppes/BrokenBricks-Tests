@@ -5,26 +5,6 @@ using UnityEngine;
 
 namespace MyTest.Systems
 {
-	public class SpatialNode
-	{
-		public void Update(Bounds bounds)
-		{
-
-		}
-	}
-
-	public class SpatialStructure
-	{
-		public SpatialNode Add() {
-			return null;
-		}
-
-		public void Remove(SpatialNode node)
-		{
-
-		}
-	}
-
 	public class TargetSystem : ComponentSystem, IEntityAddedEventListener, IEntityRemovedEventListener
 	{
 		SpatialStructure _spatialStructure;
@@ -87,7 +67,7 @@ namespace MyTest.Systems
 				for (int j = 0; j < targetComponent.targets.Length; j++)
 				{
 					var target = targetComponent.targets[i];
-					
+
 					var bounds = new Bounds(
 						positionComponent.position + target.bounds.center,
 						target.bounds.extents);
