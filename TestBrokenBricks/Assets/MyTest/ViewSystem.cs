@@ -6,10 +6,7 @@ namespace MyTest.Systems
 {
 	public class ViewSystem : ComponentSystem, IEntityAddedEventListener, IEntityRemovedEventListener
 	{
-		ComponentArray<ViewComponent> _views;
-		ComponentArray<PositionComponent> _positions;
-		ComponentArray<MovementPhysicsComponent> _movements;
-		ComponentArray<JumpComponent> _jumps;
+		ComponentGroup _group;
 
 		[InjectDependency]
 		protected EntityManager _entityManager;
@@ -17,21 +14,14 @@ namespace MyTest.Systems
 		public override void OnStart ()
 		{
 			base.OnStart ();
-
-			var group = _entityManager.GetComponentGroup (typeof(PositionComponent), typeof(ViewComponent), typeof(MovementPhysicsComponent), typeof(JumpComponent));
-			_positions = group.GetComponent<PositionComponent> ();
-			_views = group.GetComponent<ViewComponent> ();
-			_movements = group.GetComponent<MovementPhysicsComponent> ();
-			_jumps = group.GetComponent<JumpComponent> ();
-
-			// we probably have to use this one...
-			 group.SubscribeOnEntityAdded (this);
+			_group = _entityManager.GetComponentGroup (typeof(PositionComponent), typeof(ViewComponent), typeof(MovementPhysicsComponent), typeof(JumpComponent));
+			_group.SubscribeOnEntityAdded (this);
 		}
 
 		public void OnEntityAdded (object sender, Entity entity)
 		{
-			if (!_entityManager.HasComponent<ViewComponent> (entity))
-				return;
+			// if (!_entityManager.HasComponent<ViewComponent> (entity))
+				// return;
 
 			var view = _entityManager.GetComponent<ViewComponent> (entity);
 
@@ -47,23 +37,32 @@ namespace MyTest.Systems
 		public override void OnFixedUpdate ()
 		{
 			base.OnFixedUpdate ();
-			for (int i = 0; i < _views.Length; i++) {
-				var view = _views [i];
 
-				if (view.view == null)
+			var positionsArray = _group.GetComponent<PositionComponent> ();
+			var viewsArray = _group.GetComponent<ViewComponent> ();
+			var movementsArray = _group.GetComponent<MovementPhysicsComponent> ();
+			var jumpsArray = _group.GetComponent<JumpComponent> ();
+
+			for (int i = 0; i < viewsArray.Length; i++) {
+				var viewComponent = viewsArray [i];
+
+				if (viewComponent.view == null)
 					continue;
 
-				var pos = _positions [i].position;
+                var positionComponent = positionsArray[i];
+                var movementPhysicsComponent = movementsArray[i];
+                var jumpComponent = jumpsArray[i];
 
-				view.view.transform.position = new Vector3 (pos.x, 0, pos.y);
-				view.sprite.transform.localPosition = new Vector3(0, pos.z, 0);
+                var position = positionComponent.position;
 
-				if (view.animator != null) {
-					view.animator.SetBool ("Walking", _movements [i].direction.sqrMagnitude > 0);
-					view.sprite.flipX = _positions[i].lookingDirection.x < 0;
+				viewComponent.view.transform.position = new Vector3 (position.x, 0, position.y);
+				viewComponent.sprite.transform.localPosition = new Vector3(0, position.z, 0);
 
-					view.animator.SetBool("Jumping", _jumps[i].isJumping);
-					view.animator.SetBool("Falling", _jumps[i].isFalling);
+				if (viewComponent.animator != null) {
+                    viewComponent.animator.SetBool ("Walking", movementPhysicsComponent.direction.sqrMagnitude > 0);
+					viewComponent.sprite.flipX = positionComponent.lookingDirection.x < 0;
+                    viewComponent.animator.SetBool("Jumping", jumpComponent.isJumping);
+					viewComponent.animator.SetBool("Falling", jumpComponent.isFalling);
 				}
 			}
 		}
