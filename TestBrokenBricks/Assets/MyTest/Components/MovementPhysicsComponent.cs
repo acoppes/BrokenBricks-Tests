@@ -4,9 +4,8 @@ using System;
 
 namespace MyTest.Components
 {
-
 	[Serializable]
-	public class MovementPhysicsComponent : IComponent
+	public struct MovementPhysicsComponent : IComponent
 	{
 		[NonSerialized]
 		public Vector2 direction;

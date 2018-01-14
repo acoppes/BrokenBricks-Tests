@@ -1,11 +1,12 @@
 using ECS;
+using Gemserk.ECS;
 using MyTest.Components;
 
 namespace MyTest.Systems
 {
 	public class ControllerSystem : ComponentSystem
 	{
-		ComponentGroup _group;
+		ComponentTuple<ControllerComponent, MovementPhysicsComponent> _tuple;
 
 		[InjectDependency]
 		protected EntityManager _entityManager;
@@ -13,19 +14,22 @@ namespace MyTest.Systems
 		public override void OnStart ()
 		{
 			base.OnStart ();
-			_group = _entityManager.GetComponentGroup (typeof(ControllerComponent), typeof(MovementPhysicsComponent));
+			_tuple = new ComponentTuple<ControllerComponent, MovementPhysicsComponent>(_entityManager);
 		}
 
 		public override void OnFixedUpdate ()
 		{
 			base.OnFixedUpdate ();
 
-			var controllers = _group.GetComponent<ControllerComponent> ();
-			var movements = _group.GetComponent<MovementPhysicsComponent> ();
+			for (int i = 0; i < _tuple.Count; i++) {
+				_tuple.EntityIndex = i;
 
-			for (int i = 0; i < controllers.Length; i++) {
-				movements [i].direction = controllers [i].movement.normalized;
-			}
+                var controllerComponent = _tuple.component1;
+                var movementPhysicsComponent = _tuple.component2;
+
+                movementPhysicsComponent.direction = controllerComponent.movement.normalized;
+				
+				_tuple.component2 = movementPhysicsComponent;			}
 		}
 
 	}
