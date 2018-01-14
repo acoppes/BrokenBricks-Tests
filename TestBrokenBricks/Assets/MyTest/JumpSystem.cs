@@ -44,8 +44,8 @@ namespace MyTest.Systems
 
 				// TODO: we could use our custom GlobalTime
 
-				var p = positionComponent.position;
-				p.z = physicsComponent.position.z;
+				var position = positionComponent.position;
+				position.z = physicsComponent.position.z;
 			
 				if (jumpComponent.isJumping) {
 
@@ -61,20 +61,21 @@ namespace MyTest.Systems
 						}
 					}
 						
-				} else if (!jumpComponent.isFalling && p.z > 0) {
+				} else if (!jumpComponent.isFalling && position.z > 0) {
 					jumpComponent.isFalling = true;
 				}
 
 				if (jumpComponent.isFalling) {
 
-					if (Mathf.Abs(p.z - 0.0f) < Mathf.Epsilon) {
-						p.z = 0;
+					if (Mathf.Abs(position.z - 0.0f) < Mathf.Epsilon) {
+						position.z = 0;
 						jumpComponent.isFalling = false;
 					}
 				}
 
-				positionComponent.position = p;
+				positionComponent.position = position;
 
+				positionsArray.GetEntity(i).SetComponent(positionComponent);
 				jumpsArray.GetEntity(i).SetComponent(jumpComponent);
 			}
 		}

@@ -4,9 +4,8 @@ using System;
 
 namespace MyTest.Components
 {
-
 	[Serializable]
-	public class PositionComponent : IComponent
+	public struct PositionComponent : IComponent
 	{
 		public Vector3 position;
 

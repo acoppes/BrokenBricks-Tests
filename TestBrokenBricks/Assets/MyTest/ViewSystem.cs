@@ -20,9 +20,6 @@ namespace MyTest.Systems
 
 		public void OnEntityAdded (object sender, Entity entity)
 		{
-			// if (!_entityManager.HasComponent<ViewComponent> (entity))
-				// return;
-
 			var view = _entityManager.GetComponent<ViewComponent> (entity);
 
 			if (view.viewPrefab != null && view.view == null) {

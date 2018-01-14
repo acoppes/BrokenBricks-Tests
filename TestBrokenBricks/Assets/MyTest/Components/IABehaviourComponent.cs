@@ -5,12 +5,9 @@ using System;
 namespace MyTest.Components
 {
     [Serializable]
-	public class IABehaviourComponent : IComponent
+	public struct IABehaviourComponent : IComponent
 	{
-		// link to behaviour tree?
-
-		[NonSerialized]
-		public bool waitingForAction = true;
+		public bool waitingForAction;
 
 		[NonSerialized]
 		public bool walking;
@@ -20,7 +17,7 @@ namespace MyTest.Components
 
 		public float waitForActionTime;
 
-		public float maxRandomDistance = 1.0f;
+		public float maxRandomDistance;
 
 		[NonSerialized]
 		public Vector3 destination;

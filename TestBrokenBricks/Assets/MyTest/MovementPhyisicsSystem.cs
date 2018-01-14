@@ -35,23 +35,23 @@ namespace MyTest.Systems
 			Vector3 horizontalForce = new Vector3();
 
 			for (int i = 0; i < movementArray.Length; i++) {
-				var movement = movementArray [i];
-				var position = positionArray [i];
-				var physics = physicsArray [i];
+				var movementComponent = movementArray [i];
+				var positionComponent = positionArray [i];
+				var physicsComponent = physicsArray [i];
 
-				var v = physics.velocity;
+				var v = physicsComponent.velocity;
 				v.z = 0.0f;
 
-				if (movement.direction.sqrMagnitude > 0) {
+				if (movementComponent.direction.sqrMagnitude > 0) {
 
-					var moveForce = (Vector3) movement.direction.normalized * movement.force;
+					var moveForce = (Vector3) movementComponent.direction.normalized * movementComponent.force;
 
-					var maxSpeedHorizontal = movement.maxSpeedHorizontal;
+					var maxSpeedHorizontal = movementComponent.maxSpeedHorizontal;
 
 					if (maxSpeedHorizontal > 0) {
 						// this does some "estimation" of physics behaviour.. not sure if here is the right
 						// place but want to do this logic only for movement...
-						var vh = physics.velocity + moveForce * dt;
+						var vh = physicsComponent.velocity + moveForce * dt;
 						vh.Set (vh.x, vh.y, 0);
 
 						if (vh.sqrMagnitude > (maxSpeedHorizontal * maxSpeedHorizontal) && dt > 0) {
@@ -60,25 +60,24 @@ namespace MyTest.Systems
 						} 
 					}
 
-					physics.AddForce (moveForce);
+					physicsComponent.AddForce (moveForce);
 
 				} else {
-					if (physics.IsOnFloor ()) {
-						physics.AddForce (physics.velocity * physics.frictionMultiplier * -1.0f);
+					if (physicsComponent.IsOnFloor ()) {
+						physicsComponent.AddForce (physicsComponent.velocity * physicsComponent.frictionMultiplier * -1.0f);
 					}
 				}
 
-				var p = physics.position;
-				// managed by jump for now...
-				p.z = position.position.z;
+				var position = physicsComponent.position;
+				position.z = positionComponent.position.z;
 
-//				_positions[i].position = _positions[i].position + (Vector3)(movement.velocity * Time.deltaTime);
-
-				if (Mathf.Abs (physics.velocity.x) > 0) { 
-					position.lookingDirection = physics.velocity.normalized;
+				if (Mathf.Abs (physicsComponent.velocity.x) > 0) { 
+					positionComponent.lookingDirection = physicsComponent.velocity.normalized;
 				}
 
-				position.position = p;
+				positionComponent.position = position;
+
+				positionArray.GetEntity(i).SetComponent(positionComponent);
 			}
 		}
 

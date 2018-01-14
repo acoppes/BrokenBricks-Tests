@@ -130,6 +130,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   component:
+    waitingForAction: 1
     waitForActionTime: 2
     maxRandomDistance: 5
 --- !u!1 &259469396
@@ -337,6 +338,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   component:
+    waitingForAction: 1
     waitForActionTime: 2
     maxRandomDistance: 5
 --- !u!1 &357461086 stripped
@@ -356,6 +358,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   component:
+    waitingForAction: 1
     waitForActionTime: 2
     maxRandomDistance: 5
 --- !u!1001 &525540372
@@ -705,6 +708,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   component:
+    waitingForAction: 1
     waitForActionTime: 2
     maxRandomDistance: 5
 --- !u!1 &890621604 stripped
@@ -724,6 +728,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   component:
+    waitingForAction: 1
     waitForActionTime: 2
     maxRandomDistance: 5
 --- !u!1 &994922522
@@ -1226,6 +1231,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   component:
+    waitingForAction: 1
     waitForActionTime: 2
     maxRandomDistance: 5
 --- !u!1001 &1911307230

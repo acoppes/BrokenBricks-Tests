@@ -34,53 +34,54 @@ namespace MyTest.Systems
 
 			for (int i = 0; i < behaviourArray.Length; i++) {
 			
-				var behaviour = behaviourArray [i];
-				var controller = controllerArray [i];
-				var position = positionArray [i];
+				var behaviourComponent = behaviourArray [i];
+				var controllerComponent = controllerArray [i];
+				var positionComponent = positionArray [i];
 
-				controller.movement = Vector2.zero;
+				controllerComponent.movement = Vector2.zero;
 
-				if (behaviour.waitingForAction) {
-					behaviour.actionTime += dt;
+				if (behaviourComponent.waitingForAction) {
+					behaviourComponent.actionTime += dt;
 
-					if (behaviour.actionTime > behaviour.waitForActionTime) {
+					if (behaviourComponent.actionTime > behaviourComponent.waitForActionTime) {
 						// decide next action...
 
 						var nextAction = UnityEngine.Random.Range (0, 2);
 						if (nextAction == 0) {
-							behaviour.waitingForAction = true;
-							behaviour.walking = false;
-							behaviour.actionTime = 0;
+							behaviourComponent.waitingForAction = true;
+							behaviourComponent.walking = false;
+							behaviourComponent.actionTime = 0;
 						} else if (nextAction == 1) {
-							behaviour.walking = true;
-							behaviour.waitingForAction = false;
-							behaviour.destination = (Vector3) UnityEngine.Random.insideUnitCircle * behaviour.maxRandomDistance;
+							behaviourComponent.walking = true;
+							behaviourComponent.waitingForAction = false;
+							behaviourComponent.destination = (Vector3) UnityEngine.Random.insideUnitCircle * behaviourComponent.maxRandomDistance;
 						}
 					}
-				} else if (behaviour.walking) {
+				} else if (behaviourComponent.walking) {
 				
 					// walk to destination
 
-					controller.movement = (behaviour.destination - position.position).normalized;
+					controllerComponent.movement = (behaviourComponent.destination - positionComponent.position).normalized;
 
-					if (Vector3.Distance (position.position, behaviour.destination) < 0.1f) {
+					if (Vector3.Distance (positionComponent.position, behaviourComponent.destination) < 0.1f) {
 
 						var nextAction = UnityEngine.Random.Range (0, 2);
 						if (nextAction == 0) {
-							behaviour.waitingForAction = true;
-							behaviour.walking = false;
-							behaviour.actionTime = 0;
+							behaviourComponent.waitingForAction = true;
+							behaviourComponent.walking = false;
+							behaviourComponent.actionTime = 0;
 						} else if (nextAction == 1) {
-							behaviour.walking = true;
-							behaviour.waitingForAction = false;
-							behaviour.destination = (Vector3) UnityEngine.Random.insideUnitCircle * behaviour.maxRandomDistance;
+							behaviourComponent.walking = true;
+							behaviourComponent.waitingForAction = false;
+							behaviourComponent.destination = (Vector3) UnityEngine.Random.insideUnitCircle * behaviourComponent.maxRandomDistance;
 						}
 							
 					}
 
 				}
-
-				controllerArray.GetEntity(i).SetComponent(controller);
+				
+				behaviourArray.GetEntity(i).SetComponent(behaviourComponent);
+				controllerArray.GetEntity(i).SetComponent(controllerComponent);
 			}
 		}
 	}
