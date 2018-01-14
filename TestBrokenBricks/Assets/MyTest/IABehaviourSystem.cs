@@ -80,7 +80,7 @@ namespace MyTest.Systems
 
 				}
 
-
+				_entityManager.SetComponent(controllerArray.GetEntity(i), controller);
 			}
 		}
 	}

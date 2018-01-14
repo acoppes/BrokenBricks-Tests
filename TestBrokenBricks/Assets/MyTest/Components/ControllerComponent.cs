@@ -4,9 +4,8 @@ using System;
 
 namespace MyTest.Components
 {
-
 	[Serializable]
-	public class ControllerComponent : IComponent
+	public struct ControllerComponent : IComponent
 	{
 		[NonSerialized]
 		public Vector2 movement;

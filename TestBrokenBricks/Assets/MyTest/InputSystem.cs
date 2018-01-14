@@ -21,17 +21,20 @@ namespace MyTest.Systems
 		{
 			base.OnFixedUpdate ();
 
-			var inputs = _group.GetComponent<InputComponent> ();
-			var controllers = _group.GetComponent<ControllerComponent> ();
+			var inputArray = _group.GetComponent<InputComponent> ();
+			var controllerArray = _group.GetComponent<ControllerComponent> ();
 
-			for (int i = 0; i < inputs.Length; i++) {
+			for (int i = 0; i < inputArray.Length; i++) {
+				var controller = controllerArray [i];
 
-				controllers [i].movement = new Vector2 () { 
-					x = Input.GetAxis(inputs[i].horizontalAxisName),
-					y = Input.GetAxis(inputs[i].verticalAxisName),
+				controller.movement = new Vector2 () { 
+					x = Input.GetAxis(inputArray[i].horizontalAxisName),
+					y = Input.GetAxis(inputArray[i].verticalAxisName),
 				};
 
-				controllers [i].isJumpPressed = Input.GetButton (inputs [i].jumpActionName);
+				controller.isJumpPressed = Input.GetButton (inputArray [i].jumpActionName);
+				
+				_entityManager.SetComponent(controllerArray.GetEntity(i), controller);
 			}
 		}
 

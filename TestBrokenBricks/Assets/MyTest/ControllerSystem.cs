@@ -5,8 +5,7 @@ namespace MyTest.Systems
 {
 	public class ControllerSystem : ComponentSystem
 	{
-		ComponentArray<ControllerComponent> _controllers;
-		ComponentArray<MovementPhysicsComponent> _movements;
+		ComponentGroup _group;
 
 		[InjectDependency]
 		protected EntityManager _entityManager;
@@ -14,17 +13,18 @@ namespace MyTest.Systems
 		public override void OnStart ()
 		{
 			base.OnStart ();
-			var group = _entityManager.GetComponentGroup (typeof(ControllerComponent), typeof(MovementPhysicsComponent));
-			_controllers = group.GetComponent<ControllerComponent> ();
-			_movements = group.GetComponent<MovementPhysicsComponent> ();
+			_group = _entityManager.GetComponentGroup (typeof(ControllerComponent), typeof(MovementPhysicsComponent));
 		}
 
 		public override void OnFixedUpdate ()
 		{
 			base.OnFixedUpdate ();
 
-			for (int i = 0; i < _controllers.Length; i++) {
-				_movements [i].direction = _controllers [i].movement.normalized;
+			var controllers = _group.GetComponent<ControllerComponent> ();
+			var movements = _group.GetComponent<MovementPhysicsComponent> ();
+
+			for (int i = 0; i < controllers.Length; i++) {
+				movements [i].direction = controllers [i].movement.normalized;
 			}
 		}
 
