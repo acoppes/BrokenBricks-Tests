@@ -6,7 +6,7 @@ namespace MyTest.Components
 {
 
 	[Serializable]
-	public class LimitVelocityComponent : IComponent
+	public struct LimitVelocityComponent : IComponent
 	{
 		public float maxSpeedHorizontal;
 	}
