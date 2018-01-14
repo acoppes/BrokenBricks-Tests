@@ -1,4 +1,5 @@
 using ECS;
+using Gemserk.ECS;
 using MyTest.Components;
 using UnityEngine;
 
@@ -6,7 +7,7 @@ namespace MyTest.Systems
 {
 	public class DelegatePhysicsSystem : ComponentSystem
 	{
-		ComponentArray<DelegatePhysicsComponent> _physicsParticles;
+		ComponentTuple<DelegatePhysicsComponent> _tuple;
 
 		[InjectDependency]
 		protected EntityManager _entityManager;
@@ -16,12 +17,7 @@ namespace MyTest.Systems
 		public override void OnStart ()
 		{
 			base.OnStart ();
-
-			var group = _entityManager.GetComponentGroup (
-				typeof(DelegatePhysicsComponent)
-			);
-
-			_physicsParticles = group.GetComponent<DelegatePhysicsComponent> ();
+			_tuple = new ComponentTuple<DelegatePhysicsComponent>(_entityManager);
 		}
 
 		public override void OnFixedUpdate ()
@@ -30,30 +26,34 @@ namespace MyTest.Systems
 
 			var dt = Time.deltaTime;
 
-			for (int i = 0; i < _physicsParticles.Length; i++) {
-				var physics = _physicsParticles [i];
+			for (int i = 0; i < _tuple.Count; i++) {
+				_tuple.EntityIndex = i;
 
-				if (!physics.IsOnFloor())
-					physics.AddForce (gravity * physics.gravityMultiplier);
+				var physicsComponent = _tuple.component1;
 
-				physics.force = Vector3.ClampMagnitude(physics.force, physics.maxForce);
+				if (!physicsComponent.IsOnFloor())
+					physicsComponent.AddForce (gravity * physicsComponent.gravityMultiplier);
 
-				if (physics.force.sqrMagnitude > 0.0001f) {
-					Vector3 deltaV = physics.force * dt;
-					physics.velocity += deltaV;
+				physicsComponent.force = Vector3.ClampMagnitude(physicsComponent.force, physicsComponent.maxForce);
+
+				if (physicsComponent.force.sqrMagnitude > 0.0001f) {
+					Vector3 deltaV = physicsComponent.force * dt;
+					physicsComponent.velocity += deltaV;
 				}
 
-				if (physics.velocity.sqrMagnitude < 0.0001f)
-					physics.velocity.Set(0, 0, 0);
+				if (physicsComponent.velocity.sqrMagnitude < 0.0001f)
+					physicsComponent.velocity.Set(0, 0, 0);
 
-				physics.position += physics.velocity * dt;
+				physicsComponent.position += physicsComponent.velocity * dt;
 
-				physics.force = Vector3.zero;
+				physicsComponent.force = Vector3.zero;
 
 				// colliison with floor
-				if (physics.position.z < 0.0f) {
-					physics.StopAtHeight (0.0f);
+				if (physicsComponent.position.z < 0.0f) {
+					physicsComponent.StopAtHeight (0.0f);
 				}
+
+				_tuple.component1 = physicsComponent;
 			}
 		}
 

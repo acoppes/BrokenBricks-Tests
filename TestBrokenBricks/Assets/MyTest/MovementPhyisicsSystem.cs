@@ -1,12 +1,13 @@
 using ECS;
 using UnityEngine;
 using MyTest.Components;
+using Gemserk.ECS;
 
 namespace MyTest.Systems
 {
 	public class MovementPhyisicsSystem : ComponentSystem
 	{
-		ComponentGroup _group;
+		ComponentTuple<MovementPhysicsComponent, PositionComponent, DelegatePhysicsComponent> _tuple;
 
 		[InjectDependency]
 		protected EntityManager _entityManager;
@@ -14,12 +15,7 @@ namespace MyTest.Systems
 		public override void OnStart ()
 		{
 			base.OnStart ();
-
-			_group = _entityManager.GetComponentGroup (
-				typeof(MovementPhysicsComponent), 
-				typeof(PositionComponent),
-				typeof(DelegatePhysicsComponent)
-			);
+			_tuple = new ComponentTuple<MovementPhysicsComponent, PositionComponent, DelegatePhysicsComponent>(_entityManager);
 		}
 
 		public override void OnFixedUpdate ()
@@ -28,19 +24,17 @@ namespace MyTest.Systems
 
 			var dt = Time.deltaTime;
 
-			var movementArray = _group.GetComponent<MovementPhysicsComponent> ();
-			var positionArray = _group.GetComponent<PositionComponent> ();
-			var physicsArray = _group.GetComponent<DelegatePhysicsComponent> ();
-
 			Vector3 horizontalForce = new Vector3();
 
-			for (int i = 0; i < movementArray.Length; i++) {
-				var movementComponent = movementArray [i];
-				var positionComponent = positionArray [i];
-				var physicsComponent = physicsArray [i];
+			for (int i = 0; i < _tuple.Count; i++) {
+				_tuple.EntityIndex = i;
 
-				var v = physicsComponent.velocity;
-				v.z = 0.0f;
+				var movementComponent = _tuple.component1;
+				var positionComponent = _tuple.component2;
+				var physicsComponent = _tuple.component3;
+
+				var velocity = physicsComponent.velocity;
+				velocity.z = 0.0f;
 
 				if (movementComponent.direction.sqrMagnitude > 0) {
 
@@ -77,7 +71,8 @@ namespace MyTest.Systems
 
 				positionComponent.position = position;
 
-				positionArray.GetEntity(i).SetComponent(positionComponent);
+				_tuple.component2 = positionComponent;
+				_tuple.component3 = physicsComponent;
 			}
 		}
 

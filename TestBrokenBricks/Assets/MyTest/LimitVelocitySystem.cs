@@ -1,4 +1,5 @@
 using ECS;
+using Gemserk.ECS;
 using MyTest.Components;
 using UnityEngine;
 
@@ -6,7 +7,7 @@ namespace MyTest.Systems
 {
 	public class LimitVelocitySystem : ComponentSystem
 	{
-		ComponentGroup _group;
+		ComponentTuple<DelegatePhysicsComponent, LimitVelocityComponent> _tuple;
 
 		[InjectDependency]
 		protected EntityManager _entityManager;
@@ -14,11 +15,7 @@ namespace MyTest.Systems
 		public override void OnStart ()
 		{
 			base.OnStart ();
-
-			_group = _entityManager.GetComponentGroup (
-				typeof(DelegatePhysicsComponent),
-				typeof(LimitVelocityComponent)
-			);
+			_tuple = new ComponentTuple<DelegatePhysicsComponent, LimitVelocityComponent>(_entityManager);
 		}
 
 		public override void OnFixedUpdate ()
@@ -27,31 +24,32 @@ namespace MyTest.Systems
 
 			var dt = Time.deltaTime;
 
-			var physicsArray = _group.GetComponent<DelegatePhysicsComponent> ();
-			var limitVelocity = _group.GetComponent<LimitVelocityComponent> ();
-
 			Vector3 horizontalForce = new Vector3();
 
 			// this will limit also an explosion impulse for example
 
-			for (int i = 0; i < physicsArray.Length; i++) {
-				var physics = physicsArray[i];
+			for (int i = 0; i < _tuple.Count; i++) {
+				_tuple.EntityIndex = i;
 
-				var force = physics.force;
+				var physicsComponent = _tuple.component1;
+				var limitVelocityComponent = _tuple.component2;
+
+				var force = physicsComponent.force;
 
 				horizontalForce.Set(force.x, force.y, 0);
-				var vh = physics.velocity + horizontalForce * dt;
+				var vh = physicsComponent.velocity + horizontalForce * dt;
 				vh.Set (vh.x, vh.y, 0);
 
-				var maxSpeedHorizontal = limitVelocity [i].maxSpeedHorizontal;
+				var maxSpeedHorizontal = limitVelocityComponent.maxSpeedHorizontal;
 
 				if (maxSpeedHorizontal > 0) {
 					if (vh.sqrMagnitude > (maxSpeedHorizontal * maxSpeedHorizontal) && dt > 0) {
 						var limitForce = (vh - (vh.normalized * maxSpeedHorizontal)) / dt;
-						physics.AddForce (limitForce * -1);
+						physicsComponent.AddForce (limitForce * -1);
 					} 
 				}
 					
+				_tuple.component1 = physicsComponent;
 			}
 		}
 

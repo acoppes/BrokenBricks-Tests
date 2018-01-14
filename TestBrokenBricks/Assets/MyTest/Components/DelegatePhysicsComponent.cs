@@ -5,7 +5,7 @@ using System;
 namespace MyTest.Components
 {
 	[Serializable]
-	public class DelegatePhysicsComponent : IComponent {
+	public struct DelegatePhysicsComponent : IComponent {
 
 		[NonSerialized]
 		public Vector3 force;
@@ -16,9 +16,9 @@ namespace MyTest.Components
 
 		public Vector3 position;
 
-		public float gravityMultiplier = 1.0f;
+		public float gravityMultiplier;
 
-		public float frictionMultiplier = 1.0f;
+		public float frictionMultiplier;
 
 		public Vector3 AddForce(Vector3 force)
 		{
