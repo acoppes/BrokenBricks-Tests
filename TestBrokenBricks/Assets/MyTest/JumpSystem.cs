@@ -7,10 +7,10 @@ namespace MyTest.Systems
 {
 	public class JumpSystem : ComponentSystem
 	{
-		ComponentTuple<ControllerComponent, JumpComponent, PositionComponent, DelegatePhysicsComponent> _tuple;
-
 		[InjectDependency]
 		protected EntityManager _entityManager;
+
+		ComponentTuple<ControllerComponent, JumpComponent, PositionComponent, DelegatePhysicsComponent> _tuple;
 
 		public override void OnStart ()
 		{

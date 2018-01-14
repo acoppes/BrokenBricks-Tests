@@ -7,10 +7,10 @@ namespace MyTest.Systems
 {
 	public class LimitVelocitySystem : ComponentSystem
 	{
-		ComponentTuple<DelegatePhysicsComponent, LimitVelocityComponent> _tuple;
-
 		[InjectDependency]
 		protected EntityManager _entityManager;
+
+		ComponentTuple<DelegatePhysicsComponent, LimitVelocityComponent> _tuple;
 
 		public override void OnStart ()
 		{

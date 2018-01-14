@@ -7,10 +7,10 @@ namespace MyTest.Systems
 {
 	public class DelegatePhysicsSystem : ComponentSystem
 	{
-		ComponentTuple<DelegatePhysicsComponent> _tuple;
-
 		[InjectDependency]
 		protected EntityManager _entityManager;
+
+		ComponentTuple<DelegatePhysicsComponent> _tuple;
 
 		readonly Vector3 gravity = new Vector3(0, 0, -9.8f);
 

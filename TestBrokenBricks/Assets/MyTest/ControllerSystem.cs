@@ -6,10 +6,10 @@ namespace MyTest.Systems
 {
 	public class ControllerSystem : ComponentSystem
 	{
-		ComponentTuple<ControllerComponent, MovementPhysicsComponent> _tuple;
-
 		[InjectDependency]
 		protected EntityManager _entityManager;
+
+		ComponentTuple<ControllerComponent, MovementPhysicsComponent> _tuple;
 
 		public override void OnStart ()
 		{

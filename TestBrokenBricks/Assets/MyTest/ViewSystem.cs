@@ -1,21 +1,22 @@
 using ECS;
 using UnityEngine;
 using MyTest.Components;
+using Gemserk.ECS;
 
 namespace MyTest.Systems
 {
 	public class ViewSystem : ComponentSystem, IEntityAddedEventListener, IEntityRemovedEventListener
 	{
-		ComponentGroup _group;
-
 		[InjectDependency]
 		protected EntityManager _entityManager;
+
+		ComponentTuple<PositionComponent, ViewComponent, MovementPhysicsComponent, JumpComponent> _tuple;
 
 		public override void OnStart ()
 		{
 			base.OnStart ();
-			_group = _entityManager.GetComponentGroup (typeof(PositionComponent), typeof(ViewComponent), typeof(MovementPhysicsComponent), typeof(JumpComponent));
-			_group.SubscribeOnEntityAdded (this);
+			_tuple = new ComponentTuple<PositionComponent, ViewComponent, MovementPhysicsComponent, JumpComponent>(_entityManager);
+			_tuple.Group.SubscribeOnEntityAdded (this);
 		}
 
 		public void OnEntityAdded (object sender, Entity entity)
@@ -35,20 +36,17 @@ namespace MyTest.Systems
 		{
 			base.OnFixedUpdate ();
 
-			var positionsArray = _group.GetComponent<PositionComponent> ();
-			var viewsArray = _group.GetComponent<ViewComponent> ();
-			var movementsArray = _group.GetComponent<MovementPhysicsComponent> ();
-			var jumpsArray = _group.GetComponent<JumpComponent> ();
+			for (int i = 0; i < _tuple.Count; i++) {
+				_tuple.EntityIndex = i;
 
-			for (int i = 0; i < viewsArray.Length; i++) {
-				var viewComponent = viewsArray [i];
+				var viewComponent = _tuple.component2;
 
 				if (viewComponent.view == null)
 					continue;
 
-                var positionComponent = positionsArray[i];
-                var movementPhysicsComponent = movementsArray[i];
-                var jumpComponent = jumpsArray[i];
+                var positionComponent = _tuple.component1;
+                var movementPhysicsComponent = _tuple.component3;
+                var jumpComponent = _tuple.component4;
 
                 var position = positionComponent.position;
 

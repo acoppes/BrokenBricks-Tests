@@ -1,6 +1,7 @@
 using ECS;
 using UnityEngine;
 using MyTest.Components;
+using Gemserk.ECS;
 
 namespace MyTest.Systems
 {
@@ -9,12 +10,12 @@ namespace MyTest.Systems
 		[InjectDependency]
 		protected EntityManager _entityManager;
 
-		Gemserk.ECS.ComponentTuple<InputComponent, ControllerComponent> tuple;
+		ComponentTuple<InputComponent, ControllerComponent> tuple;
 
 		public override void OnStart ()
 		{
 			base.OnStart ();
-			tuple = new Gemserk.ECS.ComponentTuple<InputComponent, ControllerComponent>(_entityManager);
+			tuple = new ComponentTuple<InputComponent, ControllerComponent>(_entityManager);
 		}
 
 		public override void OnFixedUpdate ()

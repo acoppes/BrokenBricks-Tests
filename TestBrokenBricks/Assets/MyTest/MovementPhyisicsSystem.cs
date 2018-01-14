@@ -7,10 +7,10 @@ namespace MyTest.Systems
 {
 	public class MovementPhyisicsSystem : ComponentSystem
 	{
-		ComponentTuple<MovementPhysicsComponent, PositionComponent, DelegatePhysicsComponent> _tuple;
-
 		[InjectDependency]
 		protected EntityManager _entityManager;
+
+		ComponentTuple<MovementPhysicsComponent, PositionComponent, DelegatePhysicsComponent> _tuple;
 
 		public override void OnStart ()
 		{
