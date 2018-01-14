@@ -4,10 +4,10 @@ using MyTest.Components;
 
 public class DebugEntitiesSystem : ComponentSystem, IEntityAddedEventListener, IEntityRemovedEventListener
 {
-	class DebugBehaviour<T> : ScriptBehaviour where T : IComponent, new()
+	class DebugBehaviour<T> : ScriptBehaviour where T : struct, IComponent
 	{
 		[InjectDependency]
-		EntityManager _entityManager;
+		protected EntityManager _entityManager;
 
 		public Entity entity;
 
@@ -29,15 +29,18 @@ public class DebugEntitiesSystem : ComponentSystem, IEntityAddedEventListener, I
 		{
 			if (HasComponent()) {
 				var component = GetComponent();
-				JsonUtility.FromJsonOverwrite (JsonUtility.ToJson (component), debugComponent);
+				// JsonUtility.FromJsonOverwrite (JsonUtility.ToJson (component), debugComponent);
+				debugComponent = JsonUtility.FromJson<T>(JsonUtility.ToJson (component));
 			}			
 		}
 
 		void SerializeToEntity()
 		{
 			if (HasComponent()) {
-				var component = GetComponent ();
-				JsonUtility.FromJsonOverwrite (JsonUtility.ToJson (debugComponent), component);
+				// var component = GetComponent ();
+				// JsonUtility.FromJsonOverwrite (JsonUtility.ToJson (debugComponent), component);
+				var component = JsonUtility.FromJson<T>(JsonUtility.ToJson (debugComponent));
+				_entityManager.SetComponent<T>(entity, component);
 			}			
 		}
 
@@ -87,15 +90,26 @@ public class DebugEntitiesSystem : ComponentSystem, IEntityAddedEventListener, I
 		void OnDrawGizmos()
 		{
 			if (HasComponent()) {
-				var color = UnityEngine.Gizmos.color;
-				UnityEngine.Gizmos.color = Color.red;
-
 				var targetingComponent = GetComponent();
+				
+				var color = UnityEngine.Gizmos.color;
+
 				for (int i = 0; i < targetingComponent.targetings.Length; i++)
 				{
 					var targeting = targetingComponent.targetings[i];
+
+					if (_entityManager.HasComponent<PositionComponent>(entity)) {
+						UnityEngine.Gizmos.color = Color.blue;
+						var positionComponent =  _entityManager.GetComponent<PositionComponent>(entity);
+						var p = positionComponent.position;
+						var p1 = new Vector3(p.x, p.z, p.y);
+						UnityEngine.Gizmos.DrawWireCube(targeting.query.bounds.center + p1, targeting.query.bounds.extents);
+					}
+
 					if (targeting.targetNode == null)
 						continue;
+
+					UnityEngine.Gizmos.color = Color.red;
 					UnityEngine.Gizmos.DrawWireSphere(targeting.targetNode.target.bounds.center, 0.1f);
 				}
 
@@ -103,6 +117,34 @@ public class DebugEntitiesSystem : ComponentSystem, IEntityAddedEventListener, I
 			}	
 		}
 	}
+
+	class DelegateTargetComponent : DebugBehaviour<TargetComponent>
+	{
+		void OnDrawGizmos()
+		{
+			if (HasComponent()) {
+				var targetComponent = GetComponent();
+				
+				var color = UnityEngine.Gizmos.color;
+
+				for (int i = 0; i < targetComponent.targets.Length; i++)
+				{
+					var target = targetComponent.targets[i];
+
+					if (_entityManager.HasComponent<PositionComponent>(entity)) {
+						UnityEngine.Gizmos.color = Color.yellow;
+						var positionComponent =  _entityManager.GetComponent<PositionComponent>(entity);
+						var p = positionComponent.position;
+						var p1 = new Vector3(p.x, p.z, p.y);
+						UnityEngine.Gizmos.DrawWireCube(target.bounds.center + p1, target.bounds.extents);
+					}
+				}
+
+				UnityEngine.Gizmos.color = color;
+			}	
+		}
+	}
+
 
 	class DebugComponent : IComponent
 	{
@@ -131,6 +173,7 @@ public class DebugEntitiesSystem : ComponentSystem, IEntityAddedEventListener, I
 		var debug = entityObject.AddComponent<DelegatePhysicsBehaviour> ();
 		entityObject.AddComponent<DelegateLimitVelocityBehaviour> ().entity = entity;
 		entityObject.AddComponent<DelegateTargetingComponent> ().entity = entity;
+		entityObject.AddComponent<DelegateTargetComponent> ().entity = entity;
 
 		debug.entity = entity;
 
