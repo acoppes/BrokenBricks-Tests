@@ -8,6 +8,11 @@ public class MyTestSceneController : ECSController<UnityStandardSystemRoot, Unit
 
 	protected override void Initialize() {
 
+		// SpatialStructure spatialStructure = new SpatialStructure();
+
+		// InjectionManager.CreateObject(typeof(©))
+		InjectionManager.CreateObject(typeof(SpatialStructure));
+
 		#if UNITY_EDITOR
 		AddSystem<DebugEntitiesSystem> ();
 		#endif
@@ -24,7 +29,13 @@ public class MyTestSceneController : ECSController<UnityStandardSystemRoot, Unit
 		AddSystem<LimitVelocitySystem> ();
 		AddSystem<DelegatePhysicsSystem> ();
 
+		AddSystem<TargetSystem>();
+		AddSystem<TargetingSystem>();
+
+		// now there should be the ScriptSystem or BehaviourSystem.
+
 		AddSystem<LoadLevelSystem> ();
+
 	}
 }
 

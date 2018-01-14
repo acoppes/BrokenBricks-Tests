@@ -6,11 +6,17 @@ namespace MyTest.Systems
 {
 	public class TargetingSystem : ComponentSystem
 	{
+		[InjectDependency]
 		SpatialStructure _spatialStructure;
 
 		ComponentGroup _group;
 
 		List<SpatialStructure.SpatialNode> _nodes = new List<SpatialStructure.SpatialNode>();
+
+		public TargetingSystem()
+		{
+			
+		}
 
 		public TargetingSystem(SpatialStructure spatialStructure)
 		{

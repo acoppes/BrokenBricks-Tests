@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace MyTest.Components
 {
+	[Serializable]
 	public struct TargetFilter
 	{
 		// declaration data to be used as filter that doesn't change over time.
@@ -13,14 +14,20 @@ namespace MyTest.Components
 		// for example: the current health percentage.
 	}
 
+	[Serializable]
 	public class Target
 	{
+		[NonSerialized]
 		public Entity entity;
+		
 		public Bounds bounds;
 		public TargetFilter filters;
+
+		[NonSerialized]
 		public SpatialStructure.SpatialNode node;
     }
 
+	[Serializable]
 	public class TargetComponent : IComponent
 	{
 		public Target[] targets = new Target[1];
@@ -28,20 +35,26 @@ namespace MyTest.Components
 
 	//
 
+	[Serializable]
 	public struct TargetingQuery
 	{
-		public int quantity;
+		// limit of targets
+		// public int quantity;
 		public Bounds bounds;
 		// sort order
 		// sort function?
 	}
 
+	[Serializable]
 	public struct Targeting 
 	{
 		public TargetingQuery query;
+		
+		[NonSerialized]
 		public Target[] targets;
 	}
 
+	[Serializable]
 	public class TargetingComponent : IComponent
 	{
 		public Targeting[] targetings = new Targeting[] {

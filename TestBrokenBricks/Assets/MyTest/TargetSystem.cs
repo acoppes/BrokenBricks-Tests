@@ -7,9 +7,15 @@ namespace MyTest.Systems
 {
 	public class TargetSystem : ComponentSystem, IEntityAddedEventListener, IEntityRemovedEventListener
 	{
+		[InjectDependency]
 		SpatialStructure _spatialStructure;
 
 		ComponentGroup _group;
+
+		public TargetSystem()
+		{
+			
+		}
 
 		public TargetSystem(SpatialStructure spatialStructure)
 		{
