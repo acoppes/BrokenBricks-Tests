@@ -4,9 +4,8 @@ using System;
 
 namespace MyTest.Components
 {
-
 	[Serializable]
-	public class ViewComponent : IComponent
+	public struct ViewComponent : IComponent
 	{
 		public GameObject viewPrefab;
 		[NonSerialized]

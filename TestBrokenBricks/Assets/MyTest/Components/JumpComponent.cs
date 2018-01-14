@@ -6,7 +6,7 @@ namespace MyTest.Components
 {
 
 	[Serializable]
-	public class JumpComponent : IComponent
+	public struct JumpComponent : IComponent
 	{
 		public float jumpForce;
 
@@ -16,10 +16,10 @@ namespace MyTest.Components
 		public float jumpStopFactor;
 
 		[NonSerialized]
-		public bool isJumping = false;
+		public bool isJumping;
 
 		[NonSerialized]
-		public bool isFalling = false;
+		public bool isFalling;
 	}
 	
 }

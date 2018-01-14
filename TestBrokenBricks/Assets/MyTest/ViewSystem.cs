@@ -41,6 +41,7 @@ namespace MyTest.Systems
 				view.sprite = view.view.GetComponentInChildren<SpriteRenderer> ();
 			}
 
+			_entityManager.SetComponent(entity, view);
 		}
 
 		public override void OnFixedUpdate ()

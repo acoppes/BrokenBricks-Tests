@@ -6,10 +6,7 @@ namespace MyTest.Systems
 {
 	public class JumpSystem : ComponentSystem
 	{
-		ComponentArray<ControllerComponent> _controllers;
-		ComponentArray<JumpComponent> _jumps;
-		ComponentArray<PositionComponent> _positions;
-		ComponentArray<DelegatePhysicsComponent> _physics;
+		ComponentGroup _group;
 
 		[InjectDependency]
 		protected EntityManager _entityManager;
@@ -17,64 +14,68 @@ namespace MyTest.Systems
 		public override void OnStart ()
 		{
 			base.OnStart ();
-			var group = _entityManager.GetComponentGroup (typeof(ControllerComponent), 
+			_group = _entityManager.GetComponentGroup (typeof(ControllerComponent), 
 				typeof(JumpComponent), 
 				typeof(PositionComponent), 
 				typeof(DelegatePhysicsComponent));
-			
-			_controllers = group.GetComponent<ControllerComponent> ();
-			_jumps = group.GetComponent<JumpComponent> ();
-			_positions = group.GetComponent<PositionComponent> ();
-			_physics = group.GetComponent<DelegatePhysicsComponent> ();
 		}
 
 		public override void OnFixedUpdate ()
 		{
 			base.OnFixedUpdate ();
 
-			for (int i = 0; i < _controllers.Length; i++) {
-				var jump = _jumps [i];
-				var physics = _physics [i];
+			var controllersArray = _group.GetComponent<ControllerComponent> ();
+			var jumpsArray = _group.GetComponent<JumpComponent> ();
+			var positionsArray = _group.GetComponent<PositionComponent> ();
+			var physicsArray = _group.GetComponent<DelegatePhysicsComponent> ();
 
-				if (!jump.isFalling && !jump.isJumping && Mathf.Abs(physics.position.z) < Mathf.Epsilon) {
-					jump.isJumping = _controllers [i].isJumpPressed;
-					if (jump.isJumping) {
-						jump.currentJumpForce = jump.jumpForce;
+			for (int i = 0; i < controllersArray.Length; i++) {
+				var jumpComponent = jumpsArray [i];
+				var physicsComponent = physicsArray [i];
+				var positionComponent = positionsArray[i];
+				var controllerComponent = controllersArray [i];
+
+				if (!jumpComponent.isFalling && !jumpComponent.isJumping && Mathf.Abs(physicsComponent.position.z) < Mathf.Epsilon) {
+					jumpComponent.isJumping = controllerComponent.isJumpPressed;
+					if (jumpComponent.isJumping) {
+						jumpComponent.currentJumpForce = jumpComponent.jumpForce;
 					}
 				}
 
 				// TODO: we could use our custom GlobalTime
 
-				var p = _positions [i].position;
-				p.z = _physics [i].position.z;
+				var p = positionComponent.position;
+				p.z = physicsComponent.position.z;
 			
-				if (jump.isJumping) {
+				if (jumpComponent.isJumping) {
 
-					_physics [i].AddForce (new Vector3 (0, 0, 1) * jump.currentJumpForce);
-					jump.currentJumpForce -= jump.jumpStopFactor * Time.deltaTime;
+					physicsComponent.AddForce (new Vector3 (0, 0, 1) * jumpComponent.currentJumpForce);
+					jumpComponent.currentJumpForce -= jumpComponent.jumpStopFactor * Time.deltaTime;
 
-					if (jump.currentJumpForce <= 0 || !_controllers [i].isJumpPressed) {
-						jump.currentJumpForce = 0;
+					if (jumpComponent.currentJumpForce <= 0 || !controllerComponent.isJumpPressed) {
+						jumpComponent.currentJumpForce = 0;
 
-						if (physics.velocity.z <= 0) {
-							jump.isJumping = false;
-							jump.isFalling = true;					
+						if (physicsComponent.velocity.z <= 0) {
+							jumpComponent.isJumping = false;
+							jumpComponent.isFalling = true;					
 						}
 					}
 						
-				} else if (!jump.isFalling && p.z > 0) {
-					jump.isFalling = true;
+				} else if (!jumpComponent.isFalling && p.z > 0) {
+					jumpComponent.isFalling = true;
 				}
 
-				if (jump.isFalling) {
+				if (jumpComponent.isFalling) {
 
 					if (Mathf.Abs(p.z - 0.0f) < Mathf.Epsilon) {
 						p.z = 0;
-						jump.isFalling = false;
+						jumpComponent.isFalling = false;
 					}
 				}
 
-				_positions [i].position = p;
+				positionComponent.position = p;
+
+				jumpsArray.GetEntity(i).SetComponent(jumpComponent);
 			}
 		}
 
