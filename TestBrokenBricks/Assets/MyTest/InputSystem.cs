@@ -6,6 +6,62 @@ namespace MyTest.Systems
 {
 	public class InputSystem : ComponentSystem
 	{
+		public class GenericComponentTuple<T1, T2> 
+			where T1 : struct, IComponent 
+			where T2: struct, IComponent 
+		{
+			ComponentGroup group;
+
+			ComponentArray<T1> componentArray1;
+			ComponentArray<T2> componentArray2;
+
+			public T1 component1 {
+				get {
+					return componentArray1[_entityIndex];
+				} 
+				set {
+					componentArray1.GetEntity(_entityIndex).SetComponent(value);
+				}
+			}
+			
+			public T2 component2 {
+				get {
+					return componentArray2[_entityIndex];
+				} 
+				set {
+					componentArray2.GetEntity(_entityIndex).SetComponent(value);
+				}
+			}
+
+			int _entityIndex;
+
+			public int EntityIndex {
+				set {
+					_entityIndex = value;
+				}
+			}
+
+			public int Count {
+				get {
+					return componentArray1.Length;
+				}
+			}
+
+			public GenericComponentTuple(EntityManager manager)
+			{
+				group = manager.GetComponentGroup(typeof(T1), typeof(T2));
+				componentArray1 = group.GetComponent<T1>();
+				componentArray2 = group.GetComponent<T2>();
+			}
+
+			public void SetEntityIndex(int i)
+			{
+				component1 = componentArray1[i];
+				component2 = componentArray2[i];
+			}
+
+		}
+
 		public class ComponentTuple {
 
 			ComponentGroup group;
@@ -52,7 +108,7 @@ namespace MyTest.Systems
 				controllerArray = group.GetComponent<ControllerComponent>();
 			}
 
-			public void SetEntityi(int i)
+			public void SetEntityIndex(int i)
 			{
 				inputComponent = inputArray[i];
 				controllerComponent = controllerArray[i];
@@ -65,13 +121,15 @@ namespace MyTest.Systems
 		[InjectDependency]
 		protected EntityManager _entityManager;
 
-		ComponentTuple tuple;
+		// ComponentTuple tuple;
+		GenericComponentTuple<InputComponent, ControllerComponent> tuple;
 
 		public override void OnStart ()
 		{
 			base.OnStart ();
 			// _group = _entityManager.GetComponentGroup (typeof(InputComponent), typeof(ControllerComponent));
-			tuple = new ComponentTuple(_entityManager);
+			// tuple = new ComponentTuple(_entityManager);
+			tuple = new GenericComponentTuple<InputComponent, ControllerComponent>(_entityManager);
 		}
 
 		public override void OnFixedUpdate ()
@@ -85,8 +143,10 @@ namespace MyTest.Systems
 			{
 				tuple.EntityIndex = i;
 
-				var controller = tuple.controllerComponent;
-				var input = tuple.inputComponent;
+				// var controller = tuple.controllerComponent;
+				// var input = tuple.inputComponent;
+				var input = tuple.component1;
+				var controller = tuple.component2;
 				
 				controller.movement = new Vector2 () { 
 					x = Input.GetAxis(input.horizontalAxisName),
@@ -95,7 +155,7 @@ namespace MyTest.Systems
 
 				controller.isJumpPressed = Input.GetButton (input.jumpActionName);
 				
-				tuple.controllerComponent = controller;
+				tuple.component2 = controller;
 
 				// tuple.ControllerComponent = (i, controller);
 				// controllerArray.GetEntity(i).SetComponent(controller);
