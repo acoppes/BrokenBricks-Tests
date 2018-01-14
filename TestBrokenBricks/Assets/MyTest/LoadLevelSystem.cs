@@ -18,65 +18,16 @@ public class LoadLevelSystem : ComponentSystem
 			sceneEntity.Apply (e);
 			sceneEntity.gameObject.SetActive (false);
 		}
-	}
 
-	Entity CreateTestObject()
-	{
-		var e = _entityManager.CreateEntity();
+		var testEntity = _entityManager.CreateEntity();
 
-		_entityManager.AddComponent (e, new PositionComponent () { 
+		_entityManager.AddComponent (testEntity, new PositionComponent () { 
 			position = new Vector3(0, 0, 0),
 			lookingDirection = new Vector2(1, 0)
 		});
 
-		_entityManager.AddComponent (e, new MovementPhysicsComponent () {
-			direction = new Vector2(0, 0),
-			force = 3
+		_entityManager.AddComponent(testEntity, new TargetComponent() {
+			targets = new Target[1]
 		});
-
-		var viewPrefab = GameObject.FindObjectOfType<MyTestSceneController> ().viewPrefab;
-
-		_entityManager.AddComponent (e, new ViewComponent () { 
-			viewPrefab = viewPrefab
-		});
-
-		_entityManager.AddComponent (e, new JumpComponent () { 
-			jumpForce = 100.0f,
-			jumpStopFactor = 800.0f
-		});
-
-		_entityManager.AddComponent (e, new DelegatePhysicsComponent () { 
-//			maxSpeed = 15,
-			maxForce = 20000
-		});
-
-//		GameObject.FindObjectOfType<PhysicsParticleTemplate> ().Apply (e);
-				
-		_entityManager.AddComponent (e, new ControllerComponent ());
-
-		return e;
-	}
-
-	Entity CreateTestObjectWithoutMovement()
-	{
-		var e = _entityManager.CreateEntity();
-
-		_entityManager.AddComponent (e, new PositionComponent () { 
-			position = new Vector3(0, 0, 0),
-			lookingDirection = new Vector2(1, 0)
-		});
-
-		_entityManager.AddComponent (e, new MovementPhysicsComponent () {
-			direction = new Vector2(0, 0),
-			force = 0
-		});
-
-		var viewPrefab = GameObject.FindObjectOfType<MyTestSceneController> ().viewPrefab;
-
-		_entityManager.AddComponent (e, new ViewComponent () { 
-			viewPrefab = viewPrefab
-		});
-
-		return e;
 	}
 }

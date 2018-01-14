@@ -716,7 +716,7 @@ GameObject:
   m_PrefabParentObject: {fileID: 1591775478071632, guid: e50897aa6eb3a6f4c9aff7281886a0c7,
     type: 2}
   m_PrefabInternal: {fileID: 653348642}
---- !u!114 &890621606
+--- !u!114 &890621605
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -724,13 +724,36 @@ MonoBehaviour:
   m_GameObject: {fileID: 890621604}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a6fc9b4dfd89cf48bc89919a97c9853, type: 3}
+  m_Script: {fileID: 11500000, guid: c58c18cb5e5d02c47972307d807fe195, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   component:
-    waitingForAction: 1
-    waitForActionTime: 2
-    maxRandomDistance: 5
+    targets:
+    - bounds:
+        m_Center: {x: 0, y: 0, z: 0}
+        m_Extent: {x: 1, y: 1, z: 0}
+--- !u!1 &892795823 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1111196279886782, guid: 0c2fa9d01086f1548adccb9a5c8a1f9b,
+    type: 2}
+  m_PrefabInternal: {fileID: 1118645213}
+--- !u!114 &892795824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 892795823}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e6474faf25af464aa2ae35d7957f119, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  component:
+    targetings:
+    - query:
+        bounds:
+          m_Center: {x: 0, y: 0, z: 0}
+          m_Extent: {x: 2, y: 2, z: 0}
 --- !u!1 &994922522
 GameObject:
   m_ObjectHideFlags: 0

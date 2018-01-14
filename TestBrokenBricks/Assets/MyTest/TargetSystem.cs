@@ -8,6 +8,9 @@ namespace MyTest.Systems
 {
 	public class TargetSystem : ComponentSystem, IEntityAddedEventListener, IEntityRemovedEventListener
 	{
+		[InjectDependency]
+		EntityManager _entityManager;
+
 		ISpatialStructure<TargetNode> _spatialStructure;
 		ComponentTuple<PositionComponent, TargetComponent> _tuple;
 
@@ -20,7 +23,7 @@ namespace MyTest.Systems
 		public override void OnStart() {
 			base.OnStart();
 
-			_tuple = new ComponentTuple<PositionComponent, TargetComponent>(EntityManager);
+			_tuple = new ComponentTuple<PositionComponent, TargetComponent>(_entityManager);
 
 			_tuple.Group.SubscribeOnEntityAdded(this);
 			_tuple.Group.SubscribeOnEntityRemoved(this);
@@ -39,6 +42,8 @@ namespace MyTest.Systems
 				};
 				_spatialStructure.Add(targetComponent.targets[i].node);
 			}
+
+			entity.SetComponent(targetComponent);
 		}
 
 		public void OnEntityRemoved(object sender, Entity entity)
@@ -50,6 +55,8 @@ namespace MyTest.Systems
 				_spatialStructure.Remove(targetComponent.targets[i].node);
 				targetComponent.targets[i].node = null;
 			}
+
+			entity.SetComponent(targetComponent);
 		}
 
 		public override void OnFixedUpdate() 
@@ -64,9 +71,12 @@ namespace MyTest.Systems
 				var positionComponent = _tuple.component1;
 				var targetComponent = _tuple.component2;
 
+				if (targetComponent.targets == null)
+					continue;
+
 				for (int j = 0; j < targetComponent.targets.Length; j++)
 				{
-					var target = targetComponent.targets[i];
+					var target = targetComponent.targets[j];
 
 					var bounds = new Bounds(
 						positionComponent.position + target.bounds.center,

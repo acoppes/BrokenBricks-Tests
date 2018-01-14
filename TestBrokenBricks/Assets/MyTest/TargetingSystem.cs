@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using ECS;
 using Gemserk.ECS;
 using MyTest.Components;
+using UnityEngine;
 
 namespace MyTest.Systems
 {
@@ -12,7 +13,7 @@ namespace MyTest.Systems
 		[InjectDependency]
 		EntityManager _entityManager;
 
-		ComponentTuple<TargetingComponent> _tuple;
+		ComponentTuple<TargetingComponent, PositionComponent> _tuple;
 
 		List<TargetNode> _nodes = new List<TargetNode>();
 
@@ -23,7 +24,7 @@ namespace MyTest.Systems
 
 		public override void OnStart() {
 			base.OnStart();
-			_tuple = new ComponentTuple<TargetingComponent>(_entityManager);
+			_tuple = new ComponentTuple<TargetingComponent, PositionComponent>(_entityManager);
 		}
 
 		public override void OnFixedUpdate() 
@@ -36,11 +37,14 @@ namespace MyTest.Systems
 				_tuple.EntityIndex = i;
 
 				var targetingComponent = _tuple.component1;
+				var positionComponent = _tuple.component2;
 
 				for (int j = 0; j < targetingComponent.targetings.Length; j++)
 				{
 					var targeting = targetingComponent.targetings[j];
-					_spatialStructure.Collect(targeting.query.bounds, _nodes);
+
+					var bounds = new Bounds(positionComponent.position + targeting.query.bounds.center, targeting.query.bounds.extents);
+					_spatialStructure.Collect(bounds, _nodes);
 
 					targeting.targetNode = null;
 
@@ -53,7 +57,11 @@ namespace MyTest.Systems
 					 // filter targets given the query
 
 					_nodes.Clear();
+
+					targetingComponent.targetings[j] = targeting;
 				}
+
+				_tuple.component1 = targetingComponent;
 			}
 
 		}

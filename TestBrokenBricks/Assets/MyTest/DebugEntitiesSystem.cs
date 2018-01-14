@@ -82,6 +82,28 @@ public class DebugEntitiesSystem : ComponentSystem, IEntityAddedEventListener, I
 		
 	}
 
+	class DelegateTargetingComponent : DebugBehaviour<TargetingComponent>
+	{
+		void OnDrawGizmos()
+		{
+			if (HasComponent()) {
+				var color = UnityEngine.Gizmos.color;
+				UnityEngine.Gizmos.color = Color.red;
+
+				var targetingComponent = GetComponent();
+				for (int i = 0; i < targetingComponent.targetings.Length; i++)
+				{
+					var targeting = targetingComponent.targetings[i];
+					if (targeting.targetNode == null)
+						continue;
+					UnityEngine.Gizmos.DrawWireSphere(targeting.targetNode.target.bounds.center, 0.1f);
+				}
+
+				UnityEngine.Gizmos.color = color;
+			}	
+		}
+	}
+
 	class DebugComponent : IComponent
 	{
 		public DebugBehaviour<DelegatePhysicsComponent> debug;
@@ -108,6 +130,7 @@ public class DebugEntitiesSystem : ComponentSystem, IEntityAddedEventListener, I
 //		var debug = entityObject.AddComponent<DelegatePhysicsComponent> ();
 		var debug = entityObject.AddComponent<DelegatePhysicsBehaviour> ();
 		entityObject.AddComponent<DelegateLimitVelocityBehaviour> ().entity = entity;
+		entityObject.AddComponent<DelegateTargetingComponent> ().entity = entity;
 
 		debug.entity = entity;
 
