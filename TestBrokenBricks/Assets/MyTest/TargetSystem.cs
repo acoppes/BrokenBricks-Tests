@@ -25,6 +25,7 @@ namespace MyTest.Systems
 			);
 			
 			_group.SubscribeOnEntityAdded(this);
+			_group.SubscribeOnEntityRemoved(this);
 		}
 
 		public void OnEntityAdded(object sender, Entity entity)
@@ -34,9 +35,7 @@ namespace MyTest.Systems
 
 			for (int i = 0; i < targetComponent.targets.Length; i++)
 			{
-				var target = targetComponent.targets[i];
-				target.node = _spatialStructure.Add();
-				targetComponent.targets[i] = target;
+				 _spatialStructure.Add(targetComponent.targets[i]);
 			}
 		}
 
@@ -46,9 +45,7 @@ namespace MyTest.Systems
 			
 			for (int i = 0; i < targetComponent.targets.Length; i++)
 			{
-				var target = targetComponent.targets[i];
-				_spatialStructure.Remove(target.node);
-				target.node = null;
+				_spatialStructure.Remove(targetComponent.targets[i]);
 			}
 		}
 
@@ -72,7 +69,7 @@ namespace MyTest.Systems
 						positionComponent.position + target.bounds.center,
 						target.bounds.extents);
 
-					target.node.Update(bounds);
+					_spatialStructure.Update(target, bounds);
 				}
 			}
 

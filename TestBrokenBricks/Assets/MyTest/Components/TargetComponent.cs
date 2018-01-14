@@ -13,7 +13,7 @@ namespace MyTest.Components
 		// for example: the current health percentage.
 	}
 
-	public struct Target
+	public class Target
 	{
 		public Entity entity;
 		public Bounds bounds;
@@ -42,7 +42,7 @@ namespace MyTest.Components
 		public Target[] targets;
 	}
 
-	public class TargetingComponent
+	public class TargetingComponent : IComponent
 	{
 		public Targeting[] targetings = new Targeting[] {
 			new Targeting {
