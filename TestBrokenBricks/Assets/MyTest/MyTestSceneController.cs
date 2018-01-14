@@ -8,11 +8,8 @@ public class MyTestSceneController : ECSController<UnityStandardSystemRoot, Unit
 
 	protected override void Initialize() {
 
-		// SpatialStructure spatialStructure = new SpatialStructure();
-
-		// InjectionManager.CreateObject(typeof(©))
 		InjectionManager.CreateObject(typeof(SpatialStructure));
-
+		
 		#if UNITY_EDITOR
 		AddSystem<DebugEntitiesSystem> ();
 		#endif

@@ -2,6 +2,16 @@ using ECS;
 using UnityEngine;
 using MyTest.Components;
 
+// namespace ECS {
+//     public partial class ComponentGroup {
+	
+// 		public void SetComponent<T>(int entityIndex, T component) where T : struct, IComponent
+// 		{
+// 			_entityManager.SetComponent(GetComponent<T>().GetEntity(entityIndex), component);
+// 		}
+// 	}
+// }
+
 namespace MyTest.Systems
 {
 	public class InputSystem : ComponentSystem
@@ -34,7 +44,9 @@ namespace MyTest.Systems
 
 				controller.isJumpPressed = Input.GetButton (inputArray [i].jumpActionName);
 				
-				_entityManager.SetComponent(controllerArray.GetEntity(i), controller);
+				controllerArray.GetEntity(i).SetComponent(controller);
+				// _group.SetComponent(i, controller);
+				// _entityManager.SetComponent(controllerArray.GetEntity(i), controller);
 			}
 		}
 
