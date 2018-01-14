@@ -6,8 +6,7 @@ namespace MyTest.Systems
 {
 	public class InputSystem : ComponentSystem
 	{
-		ComponentArray<InputComponent> _inputs;
-		ComponentArray<ControllerComponent> _controllers;
+		ComponentGroup _group;
 
 		[InjectDependency]
 		protected EntityManager _entityManager;
@@ -15,23 +14,24 @@ namespace MyTest.Systems
 		public override void OnStart ()
 		{
 			base.OnStart ();
-			var group = _entityManager.GetComponentGroup (typeof(InputComponent), typeof(ControllerComponent));
-			_inputs = group.GetComponent<InputComponent> ();
-			_controllers = group.GetComponent<ControllerComponent> ();
+			_group = _entityManager.GetComponentGroup (typeof(InputComponent), typeof(ControllerComponent));
 		}
 
 		public override void OnFixedUpdate ()
 		{
 			base.OnFixedUpdate ();
 
-			for (int i = 0; i < _inputs.Length; i++) {
+			var inputs = _group.GetComponent<InputComponent> ();
+			var controllers = _group.GetComponent<ControllerComponent> ();
 
-				_controllers [i].movement = new Vector2 () { 
-					x = Input.GetAxis(_inputs[i].horizontalAxisName),
-					y = Input.GetAxis(_inputs[i].verticalAxisName),
+			for (int i = 0; i < inputs.Length; i++) {
+
+				controllers [i].movement = new Vector2 () { 
+					x = Input.GetAxis(inputs[i].horizontalAxisName),
+					y = Input.GetAxis(inputs[i].verticalAxisName),
 				};
 
-				_controllers [i].isJumpPressed = Input.GetButton (_inputs [i].jumpActionName);
+				controllers [i].isJumpPressed = Input.GetButton (inputs [i].jumpActionName);
 			}
 		}
 

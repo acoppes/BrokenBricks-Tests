@@ -6,7 +6,7 @@ namespace MyTest.Components
 {
 
 	[Serializable]
-	public class InputComponent : IComponent
+	public struct InputComponent : IComponent
 	{
 		public string horizontalAxisName;
 		public string verticalAxisName;
