@@ -1,34 +1,29 @@
 using System.Collections.Generic;
 using ECS;
+using Gemserk.ECS;
 using MyTest.Components;
 
 namespace MyTest.Systems
 {
 	public class TargetingSystem : ComponentSystem
 	{
+		ISpatialStructure<TargetNode> _spatialStructure;
+		
 		[InjectDependency]
-		SpatialStructure _spatialStructure;
+		EntityManager _entityManager;
 
-		ComponentGroup _group;
+		ComponentTuple<TargetingComponent> _tuple;
 
-		List<SpatialStructure.SpatialNode> _nodes = new List<SpatialStructure.SpatialNode>();
+		List<TargetNode> _nodes = new List<TargetNode>();
 
-		public TargetingSystem()
-		{
-			
-		}
-
-		public TargetingSystem(SpatialStructure spatialStructure)
+		public TargetingSystem(ISpatialStructure<TargetNode> spatialStructure)
 		{
 			_spatialStructure = spatialStructure;
 		}
 
 		public override void OnStart() {
 			base.OnStart();
-
-			_group = EntityManager.GetComponentGroup(
-				typeof(TargetingComponent)
-			);
+			_tuple = new ComponentTuple<TargetingComponent>(_entityManager);
 		}
 
 		public override void OnFixedUpdate() 
@@ -36,19 +31,28 @@ namespace MyTest.Systems
 			base.OnFixedUpdate();
 
 			// updates targets in all targeting based on filters, etc.
-			var targetingArray = _group.GetComponent<TargetingComponent> ();
 
-			for (int i = 0; i < targetingArray.Length; i++) {
-				var targetingComponent = targetingArray[i];
+			for (int i = 0; i < _tuple.Count; i++) {
+				_tuple.EntityIndex = i;
+
+				var targetingComponent = _tuple.component1;
 
 				for (int j = 0; j < targetingComponent.targetings.Length; j++)
 				{
 					var targeting = targetingComponent.targetings[j];
-					 _spatialStructure.Collect(targeting.query.bounds, targeting.targets);
+					_spatialStructure.Collect(targeting.query.bounds, _nodes);
+
+					targeting.targetNode = null;
+
+					// storing only one target for now, and filtering 
+					// and sorting logic is missing yet.
+
+					if (_nodes.Count > 0) 
+						targeting.targetNode = _nodes[0];
 
 					 // filter targets given the query
 
-					 _nodes.Clear();
+					_nodes.Clear();
 				}
 			}
 

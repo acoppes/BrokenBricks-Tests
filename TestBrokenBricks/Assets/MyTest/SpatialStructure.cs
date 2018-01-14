@@ -2,78 +2,66 @@ using System.Collections.Generic;
 using MyTest.Components;
 using UnityEngine;
 using System.Linq;
+using System;
 
 namespace MyTest.Systems
 {
-    public class SpatialStructure
+	public interface ISpatialNode 
 	{
-		public class SpatialNode
-		{
-            Target _target;
-			SpatialStructure _spatialStructure;
-			Bounds _bounds;
+		Bounds GetBounds();
+	}
 
-			public Target Target
-			{
-				get {
-					return _target;
-				}
-			}
+	public interface ISpatialStructure<T>
+	{
+		void Add(T spatialObject);
 
-			public Bounds Bounds {
-				get {
-					return _bounds;
-				}
-			}
+		void Remove(T spatialObject);
 
-			public SpatialNode(SpatialStructure spatialStructure, Target target)
-			{
-				_spatialStructure = spatialStructure;
-                _target = target;
+		void Update(T spatialObject);
 
-				_target.node = this;
-			}
+		void Collect(Bounds bounds, List<T> spatialObjects);
+	}
 
-			public void Update(Bounds bounds)
-			{
-				_bounds = bounds;
-			}
-		}
+    public class SpatialStructure<T> : ISpatialStructure<T> where T : ISpatialNode
+	{
+		List<T> _nodes = new List<T>();
 
-		List<SpatialNode> _nodes = new List<SpatialNode>();
+		// Func<T, Bounds> _boundsDelegate;
 
-		public void Add(Target target) {
-			_nodes.Add(new SpatialNode(this, target));
-		}
+		// public SpatialStructure(Func<T, Bounds> boundsDelegate) {
+		// 	_boundsDelegate = boundsDelegate;
+		// }
 
-		public void Remove(Target target)
-		{
-			if (target.node == null)
-					return;
-			_nodes.Remove(target.node);
-			target.node = null;
-		}
+        public void Add(T spatialObject)
+        {
+            _nodes.Add(spatialObject);
+        }
 
-		public void Update(Target target, Bounds bounds)
-		{
-			target.node.Update(bounds);
-		}
+        public void Remove(T spatialObject)
+        {
+			_nodes.Remove(spatialObject);
+        }
 
-        public void Collect(Bounds bounds, Target[] targetsArray)
+        public void Update(T spatialObject)
+        {
+			// var newBounds = _boundsDelegate(spatialObject);
+			// don't know yet
+        }
+
+        public void Collect(Bounds bounds, List<T> spatialObjects)
         {
             // for each node (target) that matches the bounds check, adds it to the targets array.
 			// until targets array is complete or no more nodes (targets).
-			int currentTarget = 0;
+			// int currentTarget = 0;
 
 			for (int i = 0; i < _nodes.Count; i++)
 			{
-				if (currentTarget >= targetsArray.Length)
-					return;
-
-				if (bounds.Intersects(_nodes[i].Bounds)) {
-					targetsArray[currentTarget++] = _nodes[i].Target;
+				if (bounds.Intersects(_nodes[i].GetBounds())) {
+					spatialObjects.Add(_nodes[i]);
+					// targetsArray[currentTarget++] = _nodes[i].Target;
 				}
 			}
         }
-	}
+
+    }
 }

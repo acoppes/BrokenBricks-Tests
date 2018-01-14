@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using ECS;
+using Gemserk.ECS;
 using MyTest.Components;
 using UnityEngine;
 
@@ -7,17 +8,11 @@ namespace MyTest.Systems
 {
 	public class TargetSystem : ComponentSystem, IEntityAddedEventListener, IEntityRemovedEventListener
 	{
-		[InjectDependency]
-		SpatialStructure _spatialStructure;
+		ISpatialStructure<TargetNode> _spatialStructure;
+		ComponentTuple<PositionComponent, TargetComponent> _tuple;
 
-		ComponentGroup _group;
 
-		public TargetSystem()
-		{
-			
-		}
-
-		public TargetSystem(SpatialStructure spatialStructure)
+		public TargetSystem(ISpatialStructure<TargetNode> spatialStructure)
 		{
 			_spatialStructure = spatialStructure;
 		}
@@ -25,13 +20,10 @@ namespace MyTest.Systems
 		public override void OnStart() {
 			base.OnStart();
 
-			_group = EntityManager.GetComponentGroup(
-				typeof(PositionComponent),
-				typeof(TargetComponent)
-			);
-			
-			_group.SubscribeOnEntityAdded(this);
-			_group.SubscribeOnEntityRemoved(this);
+			_tuple = new ComponentTuple<PositionComponent, TargetComponent>(EntityManager);
+
+			_tuple.Group.SubscribeOnEntityAdded(this);
+			_tuple.Group.SubscribeOnEntityRemoved(this);
 		}
 
 		public void OnEntityAdded(object sender, Entity entity)
@@ -41,7 +33,11 @@ namespace MyTest.Systems
 
 			for (int i = 0; i < targetComponent.targets.Length; i++)
 			{
-				 _spatialStructure.Add(targetComponent.targets[i]);
+				targetComponent.targets[i].node = new TargetNode() {
+					// entity = entity,
+					target = targetComponent.targets[i]
+				};
+				_spatialStructure.Add(targetComponent.targets[i].node);
 			}
 		}
 
@@ -51,7 +47,8 @@ namespace MyTest.Systems
 			
 			for (int i = 0; i < targetComponent.targets.Length; i++)
 			{
-				_spatialStructure.Remove(targetComponent.targets[i]);
+				_spatialStructure.Remove(targetComponent.targets[i].node);
+				targetComponent.targets[i].node = null;
 			}
 		}
 
@@ -60,12 +57,12 @@ namespace MyTest.Systems
 			base.OnFixedUpdate();
 
 			// updates spatial structure
-			var positionArray = _group.GetComponent<PositionComponent> ();
-			var targetArray = _group.GetComponent<TargetComponent>();
 
-			for (int i = 0; i < targetArray.Length; i++) {
-				var targetComponent = targetArray[i];
-				var positionComponent = positionArray[i];
+			for (int i = 0; i < _tuple.Count; i++) {
+				_tuple.EntityIndex = i;
+
+				var positionComponent = _tuple.component1;
+				var targetComponent = _tuple.component2;
 
 				for (int j = 0; j < targetComponent.targets.Length; j++)
 				{
@@ -75,8 +72,14 @@ namespace MyTest.Systems
 						positionComponent.position + target.bounds.center,
 						target.bounds.extents);
 
-					_spatialStructure.Update(target, bounds);
+					target.bounds = bounds;
+
+					target.node.target = target; // strange ...
+
+					_spatialStructure.Update(target.node);
 				}
+
+				_tuple.component2 = targetComponent;
 			}
 
 		}

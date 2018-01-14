@@ -6,6 +6,17 @@ using UnityEngine;
 
 namespace MyTest.Components
 {
+	public class TargetNode : ISpatialNode {
+
+		// public Entity entity;
+		public Target target;
+
+        public Bounds GetBounds()
+        {
+            return target.bounds;
+        }
+    }
+
 	[Serializable]
 	public struct TargetFilter
 	{
@@ -15,22 +26,23 @@ namespace MyTest.Components
 	}
 
 	[Serializable]
-	public class Target
+	public struct Target
 	{
-		[NonSerialized]
-		public Entity entity;
+		// [NonSerialized]
+		// public Entity entity;
 		
 		public Bounds bounds;
-		public TargetFilter filters;
+
+		// public TargetFilter filters;
 
 		[NonSerialized]
-		public SpatialStructure.SpatialNode node;
+		public TargetNode node;
     }
 
 	[Serializable]
-	public class TargetComponent : IComponent
+	public struct TargetComponent : IComponent
 	{
-		public Target[] targets = new Target[1];
+		public Target[] targets;
 	}
 
 	//
@@ -51,17 +63,13 @@ namespace MyTest.Components
 		public TargetingQuery query;
 		
 		[NonSerialized]
-		public Target[] targets;
+		public TargetNode targetNode; // store one target for now...
 	}
 
 	[Serializable]
-	public class TargetingComponent : IComponent
+	public struct TargetingComponent : IComponent
 	{
-		public Targeting[] targetings = new Targeting[] {
-			new Targeting {
-				targets = new Target[1]
-			}
-		};
+		public Targeting[] targetings;
 	}
 
 }

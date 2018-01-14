@@ -1,4 +1,5 @@
 ﻿using ECS;
+using MyTest.Components;
 using MyTest.Systems;
 using UnityEngine;
 
@@ -8,8 +9,10 @@ public class MyTestSceneController : ECSController<UnityStandardSystemRoot, Unit
 
 	protected override void Initialize() {
 
-		InjectionManager.CreateObject(typeof(SpatialStructure));
+		// InjectionManager.CreateObject(typeof(SpatialStructure<MyTest.Components.TargetNode>));
 		
+		var spatialStructure = new SpatialStructure<TargetNode>();
+
 		#if UNITY_EDITOR
 		AddSystem<DebugEntitiesSystem> ();
 		#endif
@@ -26,13 +29,12 @@ public class MyTestSceneController : ECSController<UnityStandardSystemRoot, Unit
 		AddSystem<LimitVelocitySystem> ();
 		AddSystem<DelegatePhysicsSystem> ();
 
-		AddSystem<TargetSystem>();
-		AddSystem<TargetingSystem>();
+		AddSystem(new TargetSystem(spatialStructure));
+		AddSystem(new TargetingSystem(spatialStructure));
 
 		// now there should be the ScriptSystem or BehaviourSystem.
 
 		AddSystem<LoadLevelSystem> ();
-
 	}
 }
 
