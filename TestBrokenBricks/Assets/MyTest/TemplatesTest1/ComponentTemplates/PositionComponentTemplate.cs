@@ -10,8 +10,8 @@ public class PositionComponentTemplate : GenericEntityTemplate<PositionComponent
 		if (Application.isPlaying)
 			return;
 
-		if (component.position != new Vector3 (transform.position.x, transform.position.z, 0)) {
-			component.position = new Vector3 (transform.position.x, transform.position.z, 0);	
+		if (component.position != transform.position) {
+			component.position = transform.position;	
 
 			UnityEditor.EditorUtility.SetDirty (this);
 			UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty (UnityEngine.SceneManagement.SceneManager.GetActiveScene ());

@@ -10,7 +10,7 @@ namespace MyTest.Components
 		public Vector3 position;
 
 		[NonSerialized]
-		public Vector2 lookingDirection;
+		public Vector3 lookingDirection;
 	}
 	
 }

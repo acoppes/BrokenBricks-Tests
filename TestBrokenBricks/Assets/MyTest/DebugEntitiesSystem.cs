@@ -69,8 +69,11 @@ public class DebugEntitiesSystem : ComponentSystem, IEntityAddedEventListener, I
 			if (HasComponent()) {
 				var physicsComponent = GetComponent();
 
-				var unityPosition = new Vector3(physicsComponent.position.x, physicsComponent.position.z, physicsComponent.position.y);
-				var unityVelocity = new Vector3(physicsComponent.velocity.x, physicsComponent.velocity.z, physicsComponent.velocity.y);
+				var unityPosition = physicsComponent.position;
+				var unityVelocity = physicsComponent.velocity;
+
+				// var unityPosition = new Vector3(physicsComponent.position.x, physicsComponent.position.z, physicsComponent.position.y);
+				// var unityVelocity = new Vector3(physicsComponent.velocity.x, physicsComponent.velocity.z, physicsComponent.velocity.y);
 
 				UnityEngine.Gizmos.DrawLine(unityPosition, unityPosition + unityVelocity);
 
@@ -101,9 +104,7 @@ public class DebugEntitiesSystem : ComponentSystem, IEntityAddedEventListener, I
 					if (_entityManager.HasComponent<PositionComponent>(entity)) {
 						UnityEngine.Gizmos.color = Color.blue;
 						var positionComponent =  _entityManager.GetComponent<PositionComponent>(entity);
-						var p = positionComponent.position;
-						var p1 = new Vector3(p.x, p.z, p.y);
-						UnityEngine.Gizmos.DrawWireCube(targeting.query.bounds.center + p1, targeting.query.bounds.extents);
+						UnityEngine.Gizmos.DrawWireCube(targeting.query.bounds.center + positionComponent.position, targeting.query.bounds.extents);
 					}
 
 					if (targeting.targetNode == null)
@@ -134,9 +135,7 @@ public class DebugEntitiesSystem : ComponentSystem, IEntityAddedEventListener, I
 					if (_entityManager.HasComponent<PositionComponent>(entity)) {
 						UnityEngine.Gizmos.color = Color.yellow;
 						var positionComponent =  _entityManager.GetComponent<PositionComponent>(entity);
-						var p = positionComponent.position;
-						var p1 = new Vector3(p.x, p.z, p.y);
-						UnityEngine.Gizmos.DrawWireCube(target.bounds.center + p1, target.bounds.extents);
+						UnityEngine.Gizmos.DrawWireCube(target.bounds.center + positionComponent.position, target.bounds.extents);
 					}
 				}
 

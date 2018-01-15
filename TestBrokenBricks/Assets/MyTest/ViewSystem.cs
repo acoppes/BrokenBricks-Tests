@@ -50,8 +50,8 @@ namespace MyTest.Systems
 
                 var position = positionComponent.position;
 
-				viewComponent.view.transform.position = new Vector3 (position.x, 0, position.y);
-				viewComponent.sprite.transform.localPosition = new Vector3(0, position.z, 0);
+				viewComponent.view.transform.position = new Vector3 (position.x, 0, position.z);
+				viewComponent.sprite.transform.localPosition = new Vector3(0, position.y, 0);
 
 				if (viewComponent.animator != null) {
                     viewComponent.animator.SetBool ("Walking", movementPhysicsComponent.direction.sqrMagnitude > 0);

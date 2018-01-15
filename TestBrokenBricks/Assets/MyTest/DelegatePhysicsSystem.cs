@@ -12,7 +12,7 @@ namespace MyTest.Systems
 
 		ComponentTuple<DelegatePhysicsComponent> _tuple;
 
-		readonly Vector3 gravity = new Vector3(0, 0, -9.8f);
+		readonly Vector3 gravity = new Vector3(0, -9.8f, 0.0f);
 
 		public override void OnStart ()
 		{
@@ -49,7 +49,7 @@ namespace MyTest.Systems
 				physicsComponent.force = Vector3.zero;
 
 				// colliison with floor
-				if (physicsComponent.position.z < 0.0f) {
+				if (physicsComponent.position.y < 0.0f) {
 					physicsComponent.StopAtHeight (0.0f);
 				}
 

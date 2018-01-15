@@ -8,7 +8,7 @@ namespace MyTest.Components
 	public struct MovementPhysicsComponent : IComponent
 	{
 		[NonSerialized]
-		public Vector2 direction;
+		public Vector3 direction;
 
 		// it is the movement force (acceleration)
 		public float force;

@@ -22,6 +22,8 @@ namespace MyTest.Systems
 		{
 			base.OnFixedUpdate ();
 
+			float dt = Time.deltaTime;
+
 			for (int i = 0; i < _tuple.Count; i++) {
 				_tuple.EntityIndex = i;
 
@@ -30,7 +32,7 @@ namespace MyTest.Systems
 				var positionComponent = _tuple.component3;
 				var physicsComponent = _tuple.component4;
 
-				if (!jumpComponent.isFalling && !jumpComponent.isJumping && Mathf.Abs(physicsComponent.position.z) < Mathf.Epsilon) {
+				if (!jumpComponent.isFalling && !jumpComponent.isJumping && Mathf.Abs(physicsComponent.position.y) < Mathf.Epsilon) {
 					jumpComponent.isJumping = controllerComponent.isJumpPressed;
 					if (jumpComponent.isJumping) {
 						jumpComponent.currentJumpForce = jumpComponent.jumpForce;
@@ -40,30 +42,30 @@ namespace MyTest.Systems
 				// TODO: we could use our custom GlobalTime
 
 				var position = positionComponent.position;
-				position.z = physicsComponent.position.z;
+				position.y = physicsComponent.position.y;
 			
 				if (jumpComponent.isJumping) {
 
-					physicsComponent.AddForce (new Vector3 (0, 0, 1) * jumpComponent.currentJumpForce);
-					jumpComponent.currentJumpForce -= jumpComponent.jumpStopFactor * Time.deltaTime;
+					physicsComponent.AddForce (new Vector3 (0, 1, 0) * jumpComponent.currentJumpForce);
+					jumpComponent.currentJumpForce -= jumpComponent.jumpStopFactor * dt;
 
 					if (jumpComponent.currentJumpForce <= 0 || !controllerComponent.isJumpPressed) {
 						jumpComponent.currentJumpForce = 0;
 
-						if (physicsComponent.velocity.z <= 0) {
+						if (physicsComponent.velocity.y <= 0) {
 							jumpComponent.isJumping = false;
 							jumpComponent.isFalling = true;					
 						}
 					}
 						
-				} else if (!jumpComponent.isFalling && position.z > 0) {
+				} else if (!jumpComponent.isFalling && position.y > 0) {
 					jumpComponent.isFalling = true;
 				}
 
 				if (jumpComponent.isFalling) {
 
-					if (Mathf.Abs(position.z - 0.0f) < Mathf.Epsilon) {
-						position.z = 0;
+					if (Mathf.Abs(position.y - 0.0f) < Mathf.Epsilon) {
+						position.y = 0;
 						jumpComponent.isFalling = false;
 					}
 				}

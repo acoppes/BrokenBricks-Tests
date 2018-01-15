@@ -9,8 +9,8 @@ public class DelegatePhysicsComponentTemplate : GenericEntityTemplate<DelegatePh
 	{
 		if (Application.isPlaying)
 			return;
-		if (component.position != new UnityEngine.Vector3 (transform.position.x, transform.position.z, transform.position.y)) {
-			component.position = new UnityEngine.Vector3 (transform.position.x, transform.position.z, transform.position.y);	
+		if (component.position != transform.position) {
+			component.position = transform.position;	
 			UnityEditor.EditorUtility.SetDirty (this);
 			UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty (UnityEngine.SceneManagement.SceneManager.GetActiveScene ());
 		}

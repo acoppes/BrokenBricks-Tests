@@ -34,7 +34,7 @@ namespace MyTest.Systems
 				var physicsComponent = _tuple.component3;
 
 				var velocity = physicsComponent.velocity;
-				velocity.z = 0.0f;
+				velocity.y = 0.0f;
 
 				if (movementComponent.direction.sqrMagnitude > 0) {
 
@@ -46,7 +46,7 @@ namespace MyTest.Systems
 						// this does some "estimation" of physics behaviour.. not sure if here is the right
 						// place but want to do this logic only for movement...
 						var vh = physicsComponent.velocity + moveForce * dt;
-						vh.Set (vh.x, vh.y, 0);
+						vh.Set (vh.x, 0, vh.z);
 
 						if (vh.sqrMagnitude > (maxSpeedHorizontal * maxSpeedHorizontal) && dt > 0) {
 							var limitForce = (vh - (vh.normalized * maxSpeedHorizontal)) / dt;
@@ -63,7 +63,7 @@ namespace MyTest.Systems
 				}
 
 				var position = physicsComponent.position;
-				position.z = positionComponent.position.z;
+				position.y = positionComponent.position.y;
 
 				if (Mathf.Abs (physicsComponent.velocity.x) > 0) { 
 					positionComponent.lookingDirection = physicsComponent.velocity.normalized;

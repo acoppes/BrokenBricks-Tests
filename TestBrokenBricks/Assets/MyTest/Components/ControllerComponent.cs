@@ -8,7 +8,7 @@ namespace MyTest.Components
 	public struct ControllerComponent : IComponent
 	{
 		[NonSerialized]
-		public Vector2 movement;
+		public Vector3 movement;
 
 		[NonSerialized]
 		public bool isJumpPressed;

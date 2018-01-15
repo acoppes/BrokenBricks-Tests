@@ -28,13 +28,13 @@ namespace MyTest.Components
 
 		public void StopAtHeight(float height)
 		{
-			position.z = height;
-			velocity.z = 0.0f;
+			position.y = height;
+			velocity.y = 0.0f;
 		}
 
 		public bool IsOnFloor()
 		{
-			return Mathf.Abs (position.z - 0.0f) < Mathf.Epsilon;
+			return Mathf.Abs (position.y - 0.0f) < Mathf.Epsilon;
 		}
 	}
 	

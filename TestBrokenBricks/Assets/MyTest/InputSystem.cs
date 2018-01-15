@@ -29,9 +29,10 @@ namespace MyTest.Systems
 				var input = tuple.component1;
 				var controller = tuple.component2;
 				
-				controller.movement = new Vector2 () { 
+				controller.movement = new Vector3 () { 
 					x = Input.GetAxis(input.horizontalAxisName),
-					y = Input.GetAxis(input.verticalAxisName),
+					y = 0,
+					z = Input.GetAxis(input.verticalAxisName),
 				};
 
 				controller.isJumpPressed = Input.GetButton (input.jumpActionName);
