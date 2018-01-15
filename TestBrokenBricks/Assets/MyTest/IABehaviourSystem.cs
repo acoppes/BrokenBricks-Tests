@@ -53,7 +53,7 @@ namespace MyTest.Systems
                         {
                             behaviourComponent.walking = true;
                             behaviourComponent.waitingForAction = false;
-                            behaviourComponent.destination = (Vector3)UnityEngine.Random.insideUnitCircle * behaviourComponent.maxRandomDistance;
+                            behaviourComponent.destination = UnityEngine.Random.insideUnitSphere * behaviourComponent.maxRandomDistance;
                         }
                     }
                 }
@@ -64,7 +64,13 @@ namespace MyTest.Systems
 
                     controllerComponent.movement = (behaviourComponent.destination - positionComponent.position).normalized;
 
-                    if (Vector3.Distance(positionComponent.position, behaviourComponent.destination) < 0.1f)
+                    var p0 = positionComponent.position;
+                    var p1 = behaviourComponent.destination;
+
+                    p0.y = 0;
+                    p1.y = 0;
+
+                    if (Vector3.Distance(p0, p1) < 0.1f)
                     {
 
                         var nextAction = UnityEngine.Random.Range(0, 2);
@@ -78,7 +84,7 @@ namespace MyTest.Systems
                         {
                             behaviourComponent.walking = true;
                             behaviourComponent.waitingForAction = false;
-                            behaviourComponent.destination = (Vector3)UnityEngine.Random.insideUnitCircle * behaviourComponent.maxRandomDistance;
+                            behaviourComponent.destination = UnityEngine.Random.insideUnitSphere * behaviourComponent.maxRandomDistance;
                         }
 
                     }

@@ -27,9 +27,13 @@ namespace MyTest.Systems
                 var controllerComponent = _tuple.component1;
                 var movementPhysicsComponent = _tuple.component2;
 
-                movementPhysicsComponent.direction = controllerComponent.movement.normalized;
+				var movementDirection = controllerComponent.movement;
+				movementDirection.y = 0;
+
+                movementPhysicsComponent.direction = movementDirection.normalized;
 				
-				_tuple.component2 = movementPhysicsComponent;			}
+				_tuple.component2 = movementPhysicsComponent;	
+			}
 		}
 
 	}
