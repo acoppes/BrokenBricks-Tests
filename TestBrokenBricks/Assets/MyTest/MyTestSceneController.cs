@@ -1,4 +1,5 @@
 ﻿using ECS;
+using Gemserk.ECS.Scripting;
 using MyTest.Components;
 using MyTest.Systems;
 using UnityEngine;
@@ -33,6 +34,7 @@ public class MyTestSceneController : ECSController<UnityStandardSystemRoot, Unit
 		AddSystem(new TargetingSystem(spatialStructure));
 
 		// now there should be the ScriptSystem or BehaviourSystem.
+		AddSystem(new ScriptSystem());
 
 		AddSystem<LoadLevelSystem> ();
 	}
