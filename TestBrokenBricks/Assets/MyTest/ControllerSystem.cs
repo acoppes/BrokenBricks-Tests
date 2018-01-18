@@ -31,7 +31,10 @@ namespace MyTest.Systems
 				movementDirection.y = 0;
 
                 movementPhysicsComponent.direction = movementDirection.normalized;
+
+				controllerComponent.movement = new UnityEngine.Vector3();
 				
+				_tuple.component1 = controllerComponent;
 				_tuple.component2 = movementPhysicsComponent;	
 			}
 		}
