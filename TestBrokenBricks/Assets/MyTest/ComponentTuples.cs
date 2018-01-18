@@ -21,6 +21,12 @@ namespace Gemserk.ECS
 			}
 		}
 
+		public Entity Entity {
+			get {
+				return componentArray1.GetEntity(_entityIndex);
+			}
+		}
+
 		public int EntityIndex {
 			set {
 				_entityIndex = value;
@@ -77,6 +83,12 @@ namespace Gemserk.ECS
 			} 
 			set {
 				componentArray2.GetEntity(_entityIndex).SetComponent(value);
+			}
+		}
+
+		public Entity Entity {
+			get {
+				return componentArray1.GetEntity(_entityIndex);
 			}
 		}
 
@@ -150,6 +162,11 @@ namespace Gemserk.ECS
 			}
 		}
 
+		public Entity Entity {
+			get {
+				return componentArray1.GetEntity(_entityIndex);
+			}
+		}
 		public int EntityIndex {
 			set {
 				_entityIndex = value;
@@ -231,7 +248,12 @@ namespace Gemserk.ECS
 				componentArray4.GetEntity(_entityIndex).SetComponent(value);
 			}
 		}
-
+		
+		public Entity Entity {
+			get {
+				return componentArray1.GetEntity(_entityIndex);
+			}
+		}
 		public int EntityIndex {
 			set {
 				_entityIndex = value;
